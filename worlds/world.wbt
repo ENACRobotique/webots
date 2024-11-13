@@ -1,0 +1,25 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/VRACRobot.proto"
+EXTERNPROTO "../protos/Eurobot2025.proto"
+
+WorldInfo {
+  basicTimeStep 10
+}
+Viewpoint {
+  orientation 0.009599352837493021 0.9993054831610475 -0.03600560719341657 0.5211449246751622
+  position -1.8517809121989648 0.08102346193325083 0.6303959664577566
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF ROBOT VRACRobot {
+  translation -0.955 -0.046 0
+}
+Eurobot2025 {
+  yellow_game_elements FALSE
+  blue_game_elements FALSE
+}

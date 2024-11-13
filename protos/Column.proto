@@ -1,0 +1,41 @@
+#VRML_SIM R2023b utf8
+# license: Creative Commons Attribution 4.0 International License.
+# license url: https://creativecommons.org/licenses/by/4.0/legalcode
+
+PROTO Column [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 0 0
+  field SFString name "Column"
+]
+
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      DEF ColumnShape Shape {
+        appearance PBRAppearance {
+          baseColorMap ImageTexture {
+            url ["../protos/textures/column.jpg"]
+          }
+          roughness 1
+          metalness 0
+
+        }
+        geometry DEF ColumnShape Cylinder {
+          height 0.103
+          radius 0.0365
+          subdivision 25
+        }
+      }
+    ]
+    name IS name
+    boundingObject USE ColumnShape
+    physics Physics {
+      density -1
+      mass 0.045
+      damping Damping {
+      }
+    }
+  }
+}

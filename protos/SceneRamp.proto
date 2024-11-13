@@ -1,0 +1,56 @@
+#VRML_SIM R2023b utf8
+# license: Creative Commons Attribution 4.0 International License.
+# license url: https://creativecommons.org/licenses/by/4.0/legalcode
+
+PROTO SceneRamp [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 0 0
+  field SFString name "SceneRamp"
+]
+
+{
+  Transform {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Solid {
+        rotation 1 0 0 1.5707963268
+        children [
+          Shape {
+            appearance PBRAppearance {
+            baseColor 0.14 0.14 0.14
+            roughness 1
+            metalness 0
+            }
+            geometry DEF SceneRampShape IndexedFaceSet {
+            coord Coordinate {
+              point [
+                -0.000000 0.000000 0.000000, -0.000000 0.000000 0.200000, 0.000000 0.055000 0.000000, 0.000000 0.055000 0.200000, 0.400000 0.000000 0.000000,
+                0.400000 0.000000 0.200000
+              ]
+            }
+            normal Normal {
+              vector [
+                -1.000000 0.000000 0.000000, 0.000000 -1.000000 0.000000, 0.000000 0.000000 -1.000000, 0.000000 0.000000 1.000000, 0.136218 0.990679 0.000000
+              ]
+            }
+            coordIndex [
+              1, 3, 0, -1, 0, 3, 2, -1, 5, 1, 4, -1,
+              4, 1, 0, -1, 3, 5, 2, -1, 2, 5, 4, -1,
+              1, 5, 3, -1, 2, 4, 0, -1
+            ]
+            normalIndex [
+              0, 0, 0, -1, 0, 0, 0, -1, 1, 1, 1, -1,
+              1, 1, 1, -1, 4, 4, 4, -1, 4, 4, 4, -1,
+              3, 3, 3, -1, 2, 2, 2, -1
+            ]
+            normalPerVertex TRUE
+            }
+          }
+        ]
+        name IS name
+        boundingObject USE SceneRampShape
+      }
+    ]
+  }
+}
