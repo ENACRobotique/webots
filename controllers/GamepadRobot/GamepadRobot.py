@@ -27,7 +27,7 @@ servo = supervisor.getDevice("servo")
 vacuum = supervisor.getDevice("vacuum-gripper")
 servo.setPosition(0)
 
-camera = supervisor.getDevice("robot-camera")
+camera = supervisor.getDevice("camera")
 camera.enable(TIME_STEP)
 
 # teleplot socket
@@ -39,11 +39,11 @@ def send_telemetry(name, value):
     msg = name+":"+str(now)+":"+str(value)
     sock.sendto(msg.encode(), addr)
 
-def degs_to_rads(degs):
-    return degs*math.pi/180.0
+def deg_to_rad(deg):
+    return deg*math.pi/180.0
 
-def mms_to_rads(mms):
-    return mms/1000.0/MOTOR_WHEEL_RADIUS
+def mms_to_rads(mm):
+    return mm/1000.0/MOTOR_WHEEL_RADIUS
 
 def clip(val, min_, max_):
     if val < min_:
@@ -52,7 +52,7 @@ def clip(val, min_, max_):
         return max_
     return val
 
-ODOMETRY_WHEEL_RADIUS = 0.022 # in m
+ODOMETRY_WHEEL_RADIUS = 0.024 # in m
 MOTOR_WHEEL_RADIUS = 0.037 # in m
 MAX_SPEED_ACCEL = mms_to_rads(4000.0) * (TIME_STEP/1000.0)  #in mm/s^-2
 MAX_SPEED = 32 # in rad/s
@@ -108,7 +108,7 @@ def main():
 
         camera.getImage()
 
-        theta = cmdtheta * degs_to_rads(300) * 2
+        theta = cmdtheta * deg_to_rad(300) * 2
         speed = cmdspeed * mms_to_rads(1000)
 
         if speed - last_speed > MAX_SPEED_ACCEL:

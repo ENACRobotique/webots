@@ -121,30 +121,65 @@ def main():
     t_lidar = threading.Thread(target=lidar_thread)
     t_lidar.start()
 
-    time.sleep(0.5)
     print("GO!")
 
     while True:
-        # line(1000)
-        # wait_until_motion_finished()
+        rotate(45)
+        wait_until_motion_finished()
+    
+        line(650)
+        wait_until_motion_finished()
 
-        # rotate(-90)
-        # wait_until_motion_finished()
+        rotate(-45)
+        wait_until_motion_finished()
 
-        # line(2000)
-        # wait_until_motion_finished()
+        line(800)
+        wait_until_motion_finished()
+
+        rotate(-90)
+        wait_until_motion_finished()
+
+        line(360)
+        wait_until_motion_finished()
+
+        rotate(-90)
+        wait_until_motion_finished()
+
+        line(950)
+        wait_until_motion_finished()
+
+        line(-300)
+        wait_until_motion_finished()
+
+        rotate(150)
+        wait_until_motion_finished()
+
+        line(900)
+        wait_until_motion_finished()
+
+        rotate(30)
+        wait_until_motion_finished()
+
+        line(600)
+        wait_until_motion_finished()
+
+        rotate(-90)
+        wait_until_motion_finished()
+
+        line(280)
+        wait_until_motion_finished()
+
+        line(-280)
+        wait_until_motion_finished()
+
+        rotate(165)
+        wait_until_motion_finished()
+
+        line(1400)
+        wait_until_motion_finished()
 
         while True:
-            line(1000)
-            wait_until_motion_finished()
-
-            rotate(360)
-            wait_until_motion_finished()
-
-            line(-1000)
-            wait_until_motion_finished()
-
-            time.sleep(2)
+            time.sleep(1)
 
 if __name__ == "__main__":
     main()

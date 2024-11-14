@@ -56,7 +56,7 @@ lidar.enable(TIME_STEP)
 WHITE: int = 0x00FFFFFF
 BLACK: int = 0x00000000
 
-camera = supervisor.getDevice("robot-camera")
+camera = supervisor.getDevice("camera")
 camera.enable(TIME_STEP)
 
 def ipc_motor_thread():

@@ -7,29 +7,47 @@ The simulation step is 10 ms (defined in world.wbt) and remember the simulated p
 This should help you debug and test your robot movement and strategy while the mechanical team works on the robot :D  
 These examples are in Python to be more concise
 
-The VRACRobot.proto contains:
-- Two wheels driven by motor with encoder
+## Robots
+
+**VRACRobot.proto** is a differential drive robot:
+- Two wheels driven by motor with encoders
 - Two odometry wheels with encoders, mounted on a linear rail to assure ground contact
 - A lidar
 - A camera
 - A servo with a vacuum gripper
+- 2 compatible controllers: GamepadRobot and VRACRobotController
 
-There is 3 controllers example:
+**HolonomicRobot.proto** is a holonomic robot:
+- Four omni wheels driven by motor with encoders
+- A lidar
+- A camera
+- 1 compatible controller: GamepadHolonomicController
 
-- **GamepadRobot**: controller for VRACRobot.proto  
-Gamepad controls: Left axis (direction) RT (+speed), LT (-speed), RB (servo), A (vacuum)  
-Motors and encoders data are sent to [Teleplot](https://github.com/nesnes/teleplot)!
+**DummyRobot.proto** is a dummy robot to test other robots against
+- 1 compatible controller: DummyRobot
 
-- **VRACRobotController**: external controller for VRACRobot.proto  
-See section [VRACRobotController](#VRACRobotController)
+## Controllers
 
-- **DummyOpponent**: controller for DummyOpponent.proto  
-Move a dummy enemy robot to random predefined positions on the table  
-Used to check the VRACRobot main strategy will handle random situations  
-This dummy robot has no collisions, it is only detected by lidar points by the VRACRobot  
+**GamepadRobot**:  
+Gamepad controls: Left horizontal axis (direction), RT (+speed), LT (-speed), RB (servo), A (vacuum)  
+Motors and encoders data are sent in realtime to [Teleplot](https://github.com/nesnes/teleplot)!
+
+**GamepadHolonomicController**:  
+Gamepad controls: Left horizontal axis (move on Y axis), Left vertical axis (move on X axis), Right horizontal axis (rotate)  
+
+**DummyRobot**: 
+Move a dummy enemy robot to a random predefined position on the table  
+DummyOpponent stops moving if the WbNodeRef "OPPONENT" is very close  
+This dummy robot has no physical body, it is only detected by lidar points by other robots  
+Used to check the strategy will handle some random situations  
 (thanks memristor for this controller)
 
+**VRACRobotController**:  
+See section [VRACRobotController](#VRACRobotController)
+
 ## VRACRobotController
+
+(probably linux only because of the virtual CAN)
 
 VRACRobotController.py: an external controller that is used to interface the real robot program with the Webots simulation environment.  
 

@@ -99,7 +99,7 @@ class Odometry:
 
         self.last_ticks_left = ticks_left
         self.last_ticks_right = ticks_right
-    
+
     def get_x(self):
         return self.x_mm
 
@@ -315,7 +315,6 @@ ROT_ACCEL = 400 # in rad/s^-2
 setpoints = Setpoints(0, 0)
 pid_dist = PID(0.01, 0, 0)
 pid_theta = PID(0.3, 0, 0)
-counter_atgoal = 0
 
 bus = can.ThreadSafeBus(interface='socketcan', channel='vcan0', bitrate=500000)
 
@@ -337,6 +336,8 @@ def main():
 
     t_can_status = threading.Thread(target=can_status_thread)
     t_can_status.start()
+
+    counter_atgoal = 0
 
     while True:
         # IF NOT SIM read odometry ticks from encoders here
@@ -420,7 +421,7 @@ def main():
                     bus.send(msg)
 
             elif motionstate == MotionState.ROTATE:
-                if math.fabs(theta_error) < 0.5 and odo.get_velocity_theta() < 2:
+                if math.fabs(theta_error) < 0.2 and odo.get_velocity_theta() < 2:
                     counter_atgoal += 1
                 else:
                     counter_atgoal = 0
