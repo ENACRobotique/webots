@@ -8,10 +8,13 @@ EXTERNPROTO "PlatformColumnStack.proto"
 EXTERNPROTO "SceneRamp.proto"
 EXTERNPROTO "CalculationZone.proto"
 EXTERNPROTO "BeaconSupport.proto"
+EXTERNPROTO "FixedBeacon.proto"
 
 PROTO Eurobot2025 [
   field SFBool yellow_game_elements TRUE
   field SFBool blue_game_elements TRUE
+  field SFBool blue_fixed_beacons TRUE
+  field SFBool yellow_fixed_beacons FALSE
 ]
 
 {
@@ -70,6 +73,44 @@ Group {
       name "BeaconSupport#blue3"
       color "blue"
     }
+
+    %< if (fields.blue_fixed_beacons.value) { >%
+
+    FixedBeacon {
+      translation -1.594 0 0.51
+      name "FixedBeacon#Blue1"
+    }
+
+    FixedBeacon {
+      translation 1.594 0.952 0.51
+      name "FixedBeacon#Blue2"
+    }
+
+    FixedBeacon {
+      translation 1.594 -0.952 0.51
+      name "FixedBeacon#Blue3"
+    }
+
+    %< } >%
+
+    %< if (fields.yellow_fixed_beacons.value) { >%
+
+    FixedBeacon {
+      translation -1.594 0.952 0.51
+      name "FixedBeacon#Yellow1"
+    }
+
+    FixedBeacon {
+      translation -1.594 -0.952 0.51
+      name "FixedBeacon#Yellow2"
+    }
+
+    FixedBeacon {
+      translation 1.594 0 0.51
+      name "FixedBeacon#Yellow3"
+    }
+
+    %< } >%
 
     DEF SceneWithRamp Group {
       children [
