@@ -21,6 +21,7 @@ These examples are in Python to be more concise
 - Four omni wheels driven by motor with encoders
 - A lidar
 - A camera
+- A gyro (that doesn't drift)
 - 1 compatible controller: GamepadHolonomicController
 
 **DummyRobot.proto** is a dummy robot to test other robots against

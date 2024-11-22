@@ -124,6 +124,10 @@ PROTO HolonomicRobot [
         fieldOfView 1.8
         name "camera"
       }
+
+      Gyro {
+        name "gyro"
+      }
     ]
     boundingObject USE body
     physics Physics {
