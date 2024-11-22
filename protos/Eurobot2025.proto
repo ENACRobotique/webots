@@ -11,16 +11,19 @@ EXTERNPROTO "BeaconSupport.proto"
 EXTERNPROTO "FixedBeacon.proto"
 
 PROTO Eurobot2025 [
-  field SFBool yellow_game_elements TRUE
-  field SFBool blue_game_elements TRUE
+  field SFBool grid_playmat FALSE
   field SFBool blue_fixed_beacons TRUE
   field SFBool yellow_fixed_beacons FALSE
+  field SFBool yellow_game_elements TRUE
+  field SFBool blue_game_elements TRUE
+  field SFBool scene_with_ramps TRUE
 ]
 
 {
 Group {
   children [
     BaseTable {
+      grid_playmat IS grid_playmat
     }
 	
     CalculationZone {
@@ -112,7 +115,9 @@ Group {
 
     %< } >%
 
-    DEF SceneWithRamp Group {
+    %< if (fields.scene_with_ramps.value) { >%
+
+    DEF SceneWithRamps Group {
       children [
         Solid {
           translation 0 0.775 0.0275
@@ -146,6 +151,8 @@ Group {
         }
       ]
     }
+
+    %< } >%
 
     %< if (fields.yellow_game_elements.value) { >%
   
