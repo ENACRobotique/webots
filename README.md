@@ -22,7 +22,7 @@ These examples are in Python to be more concise
 - A lidar
 - A camera
 - A gyro (that doesn't drift)
-- 1 compatible controller: GamepadHolonomic
+- 2 compatible controller: GamepadHolonomic, AutonomousHolonomic
 
 **DummyRobot.proto** is a dummy robot to test other robots against
 - 1 compatible controller: DummyRobot
@@ -46,6 +46,10 @@ DummyOpponent stops moving if the WbNodeRef "OPPONENT" is very close
 This dummy robot has no physical body, it is only detected by lidar points by other robots  
 Used to check the strategy will handle some random situations  
 (thanks memristor for this controller)
+
+**AutonomousHolonomic**:  
+Autonomous holonomic controller with odometry from motor encoders
+Performs a sequence of movements from a position (x, y, t) list
 
 **VRACRobotController**:  
 See section [VRACRobotController](#VRACRobotController)
