@@ -5,6 +5,7 @@
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Rubber.proto"
 EXTERNPROTO "ArucoTag.proto"
+EXTERNPROTO "RPLidarA2M8.proto"
 
 PROTO VRACRobot [
   field SFVec3f translation 0 0 0
@@ -253,30 +254,8 @@ PROTO VRACRobot [
         color IS color
       }
 
-      DEF RpLidarA2M8 Lidar {
-        translation 0 0 0.39
-        rotation 0 0 -1 0
-        numberOfLayers 1
-        horizontalResolution 400 # this should be 800 according to the datasheet, but in real life things are a little bit different lol
-        minRange 0.2
-        maxRange 5
-        noise 0.005
-        maxFrequency 15
-        type "rotating"
-        name "lidar"
-        children [
-          Shape {
-            appearance PBRAppearance {
-              baseColor 0 0 0
-              roughness 1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.1
-              radius 0.035
-            }
-          }
-        ]
+      RPLidarA2M8 {
+        translation 0 0 0.35
       }
 
       Display {
