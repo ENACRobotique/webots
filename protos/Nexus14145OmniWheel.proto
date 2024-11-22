@@ -7,10 +7,10 @@
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/BrushedAluminium.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Rubber.proto"
 
-PROTO OmniWheel [
+PROTO Nexus14145OmniWheel [
   field SFVec3f translation 0 0 0
-  field SFRotation rotation 0 0 0 0
-  field SFString name "OmniWheel"
+  field SFRotation rotation 0 0 1 0
+  field SFString name "Nexus14145OmniWheel"
 ]
 
 {

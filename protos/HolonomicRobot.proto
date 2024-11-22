@@ -4,7 +4,7 @@
 # template language: javascript
 
 EXTERNPROTO "ArucoTag.proto"
-EXTERNPROTO "OmniWheel.proto"
+EXTERNPROTO "Nexus14145OmniWheel.proto"
 
 PROTO HolonomicRobot [
   field SFVec3f translation 0 0 0
@@ -68,7 +68,7 @@ PROTO HolonomicRobot [
       Transform {
         rotation 0 0 1 0.785398163398
         children [
-          OmniWheel {
+          Nexus14145OmniWheel {
             translation 0.13 0 0.030
             name "frontleft-omni"
           }
@@ -78,7 +78,7 @@ PROTO HolonomicRobot [
       Transform {
         rotation 0 0 1 -0.785398163398
         children [
-          OmniWheel {
+          Nexus14145OmniWheel {
             translation 0.13 0 0.030
             name "frontright-omni"
           }
@@ -88,7 +88,7 @@ PROTO HolonomicRobot [
       Transform {
         rotation 0 0 1 2.35619449019
         children [
-          OmniWheel {
+          Nexus14145OmniWheel {
             translation 0.13 0 0.030
             name "backleft-omni"
           }
@@ -98,7 +98,7 @@ PROTO HolonomicRobot [
       Transform {
         rotation 0 0 1 -2.35619449019
         children [
-          OmniWheel {
+          Nexus14145OmniWheel {
             translation 0.13 0 0.030
             name "backright-omni"
           }
