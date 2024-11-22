@@ -131,13 +131,10 @@ PROTO HolonomicRobot [
         ]
       }
 
-      Transform {
-        translation 0 0 0.44
-        children [
-          ArucoTag {
-            id %<= fields.aruco_id.value >%
-          }
-        ]
+      ArucoTag {
+        translation 0 0 0.43
+        id %<= fields.aruco_id.value >%
+        color IS color
       }
 
       Camera {
