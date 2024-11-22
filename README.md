@@ -22,7 +22,7 @@ These examples are in Python to be more concise
 - A lidar
 - A camera
 - A gyro (that doesn't drift)
-- 1 compatible controller: GamepadHolonomicController
+- 1 compatible controller: GamepadHolonomic
 
 **DummyRobot.proto** is a dummy robot to test other robots against
 - 1 compatible controller: DummyRobot
@@ -35,8 +35,10 @@ Gamepad controls: Left horizontal axis (rotation), RT (+speed), LT (-speed), RB 
 Keyboard controls: Z (forward), S (backward), Q (+rotation), D (-rotation), F (servo), R (vacuum)  
 Motors and encoders data are sent in realtime to [Teleplot](https://github.com/nesnes/teleplot)!
 
-**GamepadHolonomicController**:  
+**GamepadHolonomic**:  
+(use gamepad if found, else use keyboard)  
 Gamepad controls: Left horizontal axis (move on Y axis), Left vertical axis (move on X axis), Right horizontal axis (rotate)  
+Keyboard controls: Z (+X), S (-X), Q (+Y), D (-Y), A (+rotate), E (-rotate)
 
 **DummyRobot**: 
 Move a dummy enemy robot to a random predefined position on the table  

@@ -1,12 +1,29 @@
-import math
-import socket
-import os
-import time
 from controller import Supervisor
 
+def joystick_init():
+    # idk why but joystick doesn't connect on the first simulation step
+    retries = 2
+
+    while supervisor.step(TIME_STEP) != -1:
+        joy.enable(TIME_STEP)
+
+        if joy.isConnected():
+            return True
+        
+        retries -= 1
+
+        if retries == 0:
+            return False
+    
+    return False
+
 supervisor = Supervisor()
-joy = supervisor.getJoystick()
+
 TIME_STEP = int(supervisor.getBasicTimeStep())
+
+kbd = supervisor.getKeyboard()
+kbd.enable(TIME_STEP)
+joy = supervisor.getJoystick()
 
 mot_frontleft = supervisor.getDevice("frontleft-omni-motor")
 mot_frontright = supervisor.getDevice("frontright-omni-motor")
@@ -27,14 +44,18 @@ camera.enable(TIME_STEP)
 MAX_SPEED = 20 # in rad/s
 
 def main():
+    use_joystick = joystick_init()
+    if use_joystick:
+        print("using joystick for GamepadHolonomic")
+    else:
+        print("using keyboard for GamepadHolonomic")
+
     while supervisor.step(TIME_STEP) != -1:
         vx = 0.0
         vy = 0.0
         omega = 0.0
 
-        if not joy.isConnected():
-            joy.enable(10)
-        else:
+        if use_joystick:
             a0 = joy.getAxisValue(0)
             a1 = joy.getAxisValue(1)
             a2 = joy.getAxisValue(2)
@@ -46,8 +67,21 @@ def main():
             vx = -a1/32767
             vy = -a0/32767
             omega = -a3/32767
+        else:
+            key = kbd.getKey()
 
-            # print(f"vx:{vx} vy:{vy} omega:{omega}")
+            if key == ord('Z'):
+                vx = 1.0
+            elif key == ord('S'):
+                vx = -1.0
+            elif key == ord('Q'):
+                vy = 1.0
+            elif key == ord('D'):
+                vy = -1.0
+            elif key == ord('A'):
+                omega = 1.0
+            elif key == ord('E'):
+                omega = -1.0
 
         frontleft = vx - vy - omega
         frontright = -vx - vy - omega
