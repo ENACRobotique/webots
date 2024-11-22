@@ -29,7 +29,9 @@ These examples are in Python to be more concise
 ## Controllers
 
 **GamepadRobot**:  
-Gamepad controls: Left horizontal axis (direction), RT (+speed), LT (-speed), RB (servo), A (vacuum)  
+(use gamepad if found, else use keyboard)  
+Gamepad controls: Left horizontal axis (rotation), RT (+speed), LT (-speed), RB (servo), A (vacuum)  
+Keyboard controls: Z (forward), S (backward), Q (+rotation), D (-rotation), F (servo), R (vacuum)  
 Motors and encoders data are sent in realtime to [Teleplot](https://github.com/nesnes/teleplot)!
 
 **GamepadHolonomicController**:  

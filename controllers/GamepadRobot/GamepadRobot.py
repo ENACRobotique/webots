@@ -4,9 +4,30 @@ import os
 import time
 from controller import Supervisor
 
+def joystick_init():
+    # idk why but joystick doesn't connect on the first simulation step
+    retries = 2
+
+    while supervisor.step(TIME_STEP) != -1:
+        joy.enable(TIME_STEP)
+
+        if joy.isConnected():
+            return True
+        
+        retries -= 1
+
+        if retries == 0:
+            return False
+    
+    return False
+
 supervisor = Supervisor()
-joy = supervisor.getJoystick()
+
 TIME_STEP = int(supervisor.getBasicTimeStep())
+
+kbd = supervisor.getKeyboard()
+kbd.enable(TIME_STEP)
+joy = supervisor.getJoystick()
 
 mot_left = supervisor.getDevice("left-wheel-motor")
 mot_right = supervisor.getDevice("right-wheel-motor")
@@ -54,40 +75,41 @@ def clip(val, min_, max_):
 
 ODOMETRY_WHEEL_RADIUS = 0.024 # in m
 MOTOR_WHEEL_RADIUS = 0.037 # in m
-MAX_SPEED_ACCEL = mms_to_rads(4000.0) * (TIME_STEP/1000.0)  #in mm/s^-2
+MAX_SPEED_ACCEL = mms_to_rads(3000.0) * (TIME_STEP/1000.0)  #in mm/s^-2
 MAX_SPEED = 32 # in rad/s
 
 def main():
+    use_joystick = joystick_init()
+    if use_joystick:
+        print("using joystick for GamepadRobot")
+    else:
+        print("using keyboard for GamepadRobot")
+
     last_speed = 0
     servo_state = 0
-    last_button_state = -1
-    
+    last_key = -1
 
     while supervisor.step(TIME_STEP) != -1:
         cmdtheta = 0
         cmdspeed = 0
 
-        if not joy.isConnected():
-            joy.enable(10)
-        else:
-            b = joy.getPressedButton()
+        if use_joystick:
+            key = joy.getPressedButton()
 
-            if b != last_button_state:
-                if b == 0:
-                    if vacuum.isOn():
-                        vacuum.turnOff()
-                    else:
-                        vacuum.turnOn()
+            if key == 0 and key != last_key:
+                if vacuum.isOn():
+                    vacuum.turnOff()
+                else:
+                    vacuum.turnOn()
+            elif key == 5 and key != last_key:
+                if servo_state == 0:
+                    servo.setPosition(1.57)
+                    servo_state = 1
+                else:
+                    servo.setPosition(0)
+                    servo_state = 0
 
-                if b == 5:
-                    if servo_state == 0:
-                        servo.setPosition(1.57)
-                        servo_state = 1
-                    else:
-                        servo.setPosition(0)
-                        servo_state = 0
-
-            last_button_state = b
+            last_key = key
 
             a0 = joy.getAxisValue(0)
             a1 = joy.getAxisValue(1)
@@ -97,14 +119,39 @@ def main():
             a5 = joy.getAxisValue(5)
             # print(a0, a1, a2, a3, a4, a5)
 
-            # idk why gamepad axes are different between my win10 and my linux
+            # gamepad axes are different between my win10 and my linux
             # another quirk on my linux is until first press, a5 and a2 defaults to middle value 0.5
             if os.name == "posix":
-                cmdtheta = a0/32767
+                cmdtheta = -a0/32767
                 cmdspeed = (a5+32768)/65535 - (a2+32768)/65535
             else:
-                cmdtheta = a1/32767
+                cmdtheta = -a1/32767
                 cmdspeed = a5/32767 - a4/32767
+        else:
+            key = kbd.getKey()
+
+            if key == ord('Z'):
+                cmdspeed = 1.0
+            elif key == ord('S'):
+                cmdspeed = -1.0
+            elif key == ord('Q'):
+                cmdtheta = 1.0
+            elif key == ord('D'):
+                cmdtheta = -1.0
+            elif key == ord('R') and key != last_key:
+                if vacuum.isOn():
+                    vacuum.turnOff()
+                else:
+                    vacuum.turnOn()
+            elif key == ord('F') and key != last_key:
+                if servo_state == 0:
+                    servo.setPosition(1.57)
+                    servo_state = 1
+                else:
+                    servo.setPosition(0)
+                    servo_state = 0
+
+            last_key = key
 
         camera.getImage()
 
@@ -117,8 +164,8 @@ def main():
             speed = last_speed - MAX_SPEED_ACCEL
         last_speed = speed
 
-        right = -theta + speed
-        left = theta + speed
+        right = theta + speed
+        left = -theta + speed
 
         right = clip(right, -MAX_SPEED, MAX_SPEED)
         left = clip(left, -MAX_SPEED, MAX_SPEED)
