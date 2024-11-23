@@ -1,7 +1,6 @@
 #VRML_SIM R2023b utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "../protos/Eurobot2025.proto"
 EXTERNPROTO "../protos/DummyRobot.proto"
 EXTERNPROTO "../protos/VRACRobot.proto"
@@ -25,7 +24,18 @@ Viewpoint {
 }
 TexturedBackground {
 }
-TexturedBackgroundLight {
+SpotLight {
+  attenuation 0 0 0.1
+  beamWidth 0.5
+  cutOffAngle 0.6
+  intensity 2.7
+  location 0 0 4
+  radius 5
+  castShadows TRUE
+}
+DirectionalLight {
+  intensity 1.5
+  castShadows TRUE
 }
 Eurobot2025 {
 }
