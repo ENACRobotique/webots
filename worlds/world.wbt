@@ -41,11 +41,12 @@ Eurobot2025 {
 }
 DummyRobot {
   translation -0.26 -0.73 0
-  rotation 0 0 -1 -1.5707953071795862
+  rotation 0 0 1 1.5707953071795862
+  color "yellow"
+  aruco_id 6
 }
 DEF OPPONENT VRACRobot {
   translation -1.24 -0.14 0
-  rotation 0 0 -1 -5.307179586466759e-06
 }
 HolonomicRobot {
   translation 1.25 -0.13 0

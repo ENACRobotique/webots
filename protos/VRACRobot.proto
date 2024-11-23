@@ -12,7 +12,7 @@ PROTO VRACRobot [
   field SFRotation rotation 0 0 1 0
   field SFString name "VRACRobot"
   field SFString {"yellow", "blue"} color "blue"
-  field SFInt32 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} aruco_id 6
+  field SFInt32 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} aruco_id 1
   field SFString {"GamepadRobot", "VRACbotController", "<extern>", "<none>"} controller "<none>"
 
   hiddenField SFColor yellow_color 0.969 0.71 0
@@ -25,6 +25,7 @@ PROTO VRACRobot [
   DEF VRACRobot Robot {
     translation IS translation
     rotation IS rotation
+    name IS name
     controller IS controller
     supervisor TRUE
 
