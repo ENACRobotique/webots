@@ -28,7 +28,7 @@ PROTO Platform [
     boundingObject USE PlatformShape
     physics Physics {
       density -1
-      mass 0.4
+      mass 0.3
     }
   }
 }

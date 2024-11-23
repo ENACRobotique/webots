@@ -33,7 +33,7 @@ PROTO Column [
     boundingObject USE ColumnShape
     physics Physics {
       density -1
-      mass 0.045
+      mass 0.055
       damping Damping {
       }
     }
