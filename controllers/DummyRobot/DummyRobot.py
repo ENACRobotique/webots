@@ -4,123 +4,163 @@ import random
 from controller import Supervisor
 
 # a random speed is chosen in this interval for lines
+# should be less than epsilon in is_destination_achieved()
 MIN_VELOCITY = 0.002
 MAX_VELOCITY = 0.004
 
 # theta incremented each simulation step when rotating
+# should be less than epsilon in is_rotation_achieved()
 THETA = 0.02
 
-# collision radius of the dummy robot
+# collision radius of the dummy robot, in meter
 RADIUS = 0.3
 
 # positions (x, y, wait_seconds)
-POSITIONS = [
-    (-1.2, 0.5, 1), # backstage
-    (-0.7, 0.5, 1), # backstage stack
-    (-1.3, 0.3, 1), # stack
-    (-0.4, 0.0, 1), # stack center
-    (0.4, 0.0, 1), # stack center
-    (-0.8, -0.8, 1), # small zone bottom center
-    (-0.2, -0.6, 1), # zone bottom center
-    (1.3, -0.8, 1), # small zone bottom right
-    (1.3, -0.1, 1) # zone center right
+YELLOW_BACKSTAGE = [
+    (-1.125, 0.775, 1), # charging station
+    (-0.675, 0.725, 1), # stack3
+]
+BLUE_BACKSTAGE = [
+    (1.125, 0.775, 1), # charging station
+    (0.675, 0.725, 1), # stack3 symetry
+]
+COMMUN_STACK = [
+    (-0.725, -0.75, 1), # stack1
+    (-0.4, -0.05, 1), # stack2
+    (-1.425, 0.325, 1), # stack4
+    (-1.425, -0.6, 1), # stack5
+    (0.725, -0.75, 1), # stack1 symetry
+    (0.4, -0.05, 1), # stack2 symetry
+    (1.425, 0.325, 1), # stack4 symetry
+    (1.425, -0.6, 1), # stack5 symetry
+]
+FLOOR_ARUCO = [
+    (0.9, 0.4, 0),
+    (0.9, -0.4, 0),
+    (-0.9, 0.4, 0),
+    (-0.9, -0.4, 0),
+]
+YELLOW_CONSTRUCTION = [
+    (-0.275, -0.775, 1), # big, bottom center
+    (-0.725, -0.925, 1), # small, bottom center
+    (1.275, -0.925, 1), # small, bottom right
+    (1.275, -0.125, 1), # big, right
+]
+BLUE_CONSTRUCTION = [
+    (0.275, -0.775, 1), # big, bottom center
+    (0.725, -0.925, 1), # small, bottom center
+    (-1.275, -0.925, 1), # small, bottom left
+    (-1.275, -0.125, 1), # big, left
 ]
 
 class States(enum.Enum):
     ROTATE = 0
     GO_TO = 1
 
-def is_destination_achieved(current_position, destination_position, epsilon=0.05):
-    return abs(current_position[0] -
-               destination_position[0]) < epsilon and abs(
-                   current_position[1] - destination_position[1]) < epsilon
+def is_destination_achieved(current_position: list[float], destination_position: list[float], epsilon=0.005):
+    return abs(current_position[0] - destination_position[0]) < epsilon and abs(current_position[1] - destination_position[1]) < epsilon
 
-def wait_at_destination(supervisor, timestep, time_period):
+def wait_at_destination(supervisor: Supervisor, timestep: int, wait_time: float):
     current_time = supervisor.getTime()
-    while supervisor.getTime() - current_time < time_period:
+    while supervisor.getTime() - current_time < wait_time:
         supervisor.step(timestep)
 
-def is_rotation_achieved(current_rotation_angle, required_angle, epsilon=0.02):
-    return abs(current_rotation_angle - required_angle) < epsilon
+def is_rotation_achieved(current_angle: float, required_angle: float, epsilon=0.03):
+    return abs(current_angle - required_angle) < epsilon
 
-def set_angle(current_angle, required_angle, theta):
-    if current_angle < required_angle:
-        current_angle += theta
-    else:
-        current_angle -= theta
-    return current_angle
+def compute_next_destination(waypoints: list[tuple[float, float, float]], current_position: list[float], current_rotation: float):
+    destination = random.choice(waypoints)
+    velocity_factor = random.uniform(MIN_VELOCITY, MAX_VELOCITY)
 
-def get_target_angle(supervisor, destination_x, destination_y):
-    robot = supervisor.getSelf()
-    field = robot.getField('translation')
-    position = field.getSFVec3f()
-    return math.atan2(destination_y - position[1], destination_x - position[0])
+    target_angle = math.atan2(destination[1] - current_position[1], destination[0] - current_position[0])
+    relative_angle = target_angle - current_rotation
 
-def are_colliding(translation, translation_memristor):
-    position = translation.getSFVec3f()
-    position_memristor = translation_memristor.getSFVec3f()
+    if relative_angle > math.pi:
+        relative_angle -= 2.0*math.pi
+    if relative_angle < -math.pi:
+        relative_angle += 2.0*math.pi
+    
+    return (destination, target_angle, relative_angle, velocity_factor)
 
-    dx = position_memristor[0] - position[0]
-    dy = position_memristor[1] - position[1]
-
+def are_colliding(dummy_position: list[float], opponent_position: list[float]):
+    dx = opponent_position[0] - dummy_position[0]
+    dy = opponent_position[1] - dummy_position[1]
     return math.sqrt(dx ** 2 + dy ** 2) < RADIUS
 
 def main():
     supervisor = Supervisor()
 
+    print(f"starting DummyRobot id:{supervisor.getSelf().getId()}")
+
     timestep = int(supervisor.getBasicTimeStep())
 
-    dummy_robot = supervisor.getSelf()
-    dummy_translation = dummy_robot.getField('translation')
-    dummy_rotation = dummy_robot.getField('rotation')
+    robot_dummy = supervisor.getSelf()
+    robot_dummy_pos = robot_dummy.getField('translation')
+    robot_dummy_rot = robot_dummy.getField('rotation')
 
-    robot = supervisor.getFromDef("OPPONENT")
+    opponents = []
+    childrends = supervisor.getRoot().getField('children')
+    for i in range(childrends.getCount()):
+        node = childrends.getMFNode(i)
+        node_type = node.getTypeName()
+        
+        if node.getId() == robot_dummy.getId():
+            continue
+    
+        if node_type == "DummyRobot" or node_type == "VRACRobot" or node_type == "HolonomicRobot":
+            opponents.append(node)
+    
+    # if you only want one specific opponent
+    #opponents = [supervisor.getFromDef("OPPONENT")]
 
-    if not robot:
-        print("DummyRobot didn't found an opponent robot, collisions disabled")
+    print(f"opponents nodes: {[(node.getTypeName(),node.getId()) for node in opponents]}")
+
+    waypoints = []
+    if robot_dummy.getField('color').getSFString() == "blue":
+        waypoints = COMMUN_STACK + FLOOR_ARUCO + BLUE_CONSTRUCTION + BLUE_BACKSTAGE
     else:
-        print("DummyRobot found an opponent robot!, will stop on collision")
+        waypoints = COMMUN_STACK + FLOOR_ARUCO + YELLOW_CONSTRUCTION + YELLOW_BACKSTAGE
 
-    destination = random.choice(POSITIONS)
-
+    destination, target_angle, relative_angle, velocity_factor = compute_next_destination(waypoints, robot_dummy_pos.getSFVec3f(), robot_dummy_rot.getSFRotation()[3])
     next_state = States.ROTATE
 
     while supervisor.step(timestep) != -1:
-        pos = dummy_translation.getSFVec3f()
-        rot = dummy_rotation.getSFRotation()
+        pos = robot_dummy_pos.getSFVec3f()
+        rot = robot_dummy_rot.getSFRotation()
 
         if next_state == States.ROTATE:
-            target_angle = get_target_angle(supervisor, destination[0], destination[1])
-            
             if not is_rotation_achieved(rot[3], target_angle):
-                rot[3] = set_angle(rot[3], target_angle, THETA)
-
-            if not is_rotation_achieved(rot[3], target_angle):
-                dummy_rotation.setSFRotation(rot)
+                if relative_angle > 0.0:
+                    rot[3] += THETA
+                else:
+                    rot[3] -= THETA
             else:
+                rot[3] = target_angle
                 next_state = States.GO_TO
+            
+            robot_dummy_rot.setSFRotation(rot)
 
-        if next_state == States.GO_TO:
-            if is_destination_achieved(pos, destination):
-                wait_at_destination(supervisor, timestep, destination[2])
-                destination = random.choice(POSITIONS)
-                next_state = States.ROTATE
-
-            else:
-                velocity_factor = random.uniform(MIN_VELOCITY, MAX_VELOCITY)
+        elif next_state == States.GO_TO:
+            if not is_destination_achieved(pos, destination):
+                is_colliding = False
+                for opponent in opponents:
+                    if are_colliding(pos, opponent.getField('translation').getSFVec3f()):
+                        is_colliding = True
+                        break
+                if is_colliding:
+                    continue
 
                 delta_x = math.cos(target_angle) * velocity_factor
                 delta_y = math.sin(target_angle) * velocity_factor
 
-                if not robot or not are_colliding(dummy_translation, robot.getField('translation')):
-                    pos[0] += delta_x
-                    pos[1] += delta_y
+                pos[0] += delta_x
+                pos[1] += delta_y
+                robot_dummy_pos.setSFVec3f(pos)
+            else:
+                wait_at_destination(supervisor, timestep, destination[2])
 
-                if pos[0] != destination[0] and pos[1] != destination[1]:
-                    dummy_translation.setSFVec3f(pos)
-                else:
-                    pos[0] = destination[0]
-                    pos[1] = destination[1]
+                destination, target_angle, relative_angle, velocity_factor = compute_next_destination(waypoints, robot_dummy_pos.getSFVec3f(), robot_dummy_rot.getSFRotation()[3])
+                next_state = States.ROTATE
 
 if __name__ == '__main__':
     main()
