@@ -4,22 +4,37 @@
 # template language: javascript
 
 EXTERNPROTO "BaseTable.proto"
-EXTERNPROTO "PlatformColumnStack.proto"
-EXTERNPROTO "SceneRamp.proto"
+EXTERNPROTO "CrateGroup.proto"
+EXTERNPROTO "CrateGroup2.proto"
+EXTERNPROTO "CrateGroup3.proto"
 EXTERNPROTO "CalculationZone.proto"
 EXTERNPROTO "BeaconSupport.proto"
 EXTERNPROTO "FixedBeacon.proto"
 
-PROTO Eurobot2025 [
+PROTO Eurobot2026 [
   field SFBool grid_playmat FALSE
   field SFBool blue_fixed_beacons TRUE
   field SFBool yellow_fixed_beacons FALSE
   field SFBool yellow_game_elements TRUE
   field SFBool blue_game_elements TRUE
-  field SFBool scene_with_ramps TRUE
+  field SFBool attic TRUE
 ]
 
 {
+%<
+  import * as wbrandom from 'wbrandom.js';
+  wbrandom.seed(Date.now());
+  let colors = [];
+  for(let i=0; i<10; ++i) {
+    colors.push(wbrandom.integer(0,5));
+  }
+
+  let colors2 = [];
+  for(let i=0; i<4; ++i) {
+    colors2.push(wbrandom.integer(0,1));
+  }
+
+>%
 Group {
   children [
     BaseTable {
@@ -115,9 +130,9 @@ Group {
 
     %< } >%
 
-    %< if (fields.scene_with_ramps.value) { >%
+    %< if (fields.attic.value) { >%
 
-    DEF SceneWithRamps Group {
+    DEF Attic Group {
       children [
         Solid {
           translation 0 0.775 0.0275
@@ -125,29 +140,18 @@ Group {
             Shape {
               appearance PBRAppearance {
                 baseColorMap ImageTexture {
-                  url ["../protos/textures/scene.jpg"]
+                  url ["../protos/textures/attic.jpg"]
                 }
                 roughness 1
                 metalness 0
               }
-              geometry DEF SceneShape Box {
-                size 0.9 0.45 0.055
+              geometry DEF AtticShape Box {
+                size 1.8 0.45 0.055
               }
             }
           ]
-          name "scene"
-          boundingObject USE SceneShape
-        }
-
-        SceneRamp {
-          translation 0.45 1 0
-          name "sceneramp#blue"
-        }
-
-        SceneRamp {
-          translation -0.45 0.8 0
-          rotation 0 0 1 3.14159265359
-          name "sceneramp#yellow"
+          name "attic"
+          boundingObject USE AtticShape
         }
       ]
     }
@@ -156,63 +160,108 @@ Group {
 
     %< if (fields.yellow_game_elements.value) { >%
   
-    DEF Stack1 PlatformColumnStack {
-      name "PlatformColumnStack1"
-      translation -0.725 -0.75 0
-    }
+    DEF Stack1 CrateGroup {
+      name "Stack1"
+      translation -0.35 -0.2 0
+      colors %<=colors[0]>%
+      }
 
-    DEF Stack2 PlatformColumnStack {
-      name "PlatformColumnStack2"
-      translation -0.4 -0.05 0
-    }
+    DEF Stack2 CrateGroup {
+      name "Stack2"
+      translation -0.4 -0.80 0
+      colors %<=colors[1]>%
+      }
 
-    DEF Stack3 PlatformColumnStack {
-      name "PlatformColumnStack3"
-      translation -0.675 0.725 0
-    }
-
-    DEF Stack4 PlatformColumnStack {
-      name "PlatformColumnStack4"
-      translation -1.425 0.325 0
+    DEF Stack3 CrateGroup {
+      name "Stack3"
+      translation -1.325 0.2 0
       rotation 0 0 1 1.5707963268
+      colors %<=colors[2]>%
     }
 
-    DEF Stack5 PlatformColumnStack {
-      name "PlatformColumnStack5"
-      translation -1.425 -0.6 0
+    DEF Stack4 CrateGroup {
+      name "Stack4"
+      translation -1.325 -0.6 0
       rotation 0 0 1 1.5707963268
+      colors %<=colors[3]>%
+    }
+
+    DEF Stack5 CrateGroup {
+      name "Stack5"
+      translation -0.7 0.675 0.055
+      colors %<=colors[4]>%
+    }
+
+    DEF Stack6 CrateGroup2 {
+      name "Stack6"
+      translation -0.400 0.725 0.055
+      colors %<=colors2[0]>%
+    }
+
+    DEF Stack7 CrateGroup2 {
+      name "Stack7"
+      translation -0.150 0.775 0.055
+      colors %<=colors2[1]>%
+    }
+
+    DEF Stack8 CrateGroup3 {
+      name "Stack8"
+      translation -0.7 0.675 0.08
     }
 
     %< } >%
 
     %< if (fields.blue_game_elements.value) { >%
 
-    DEF Stack1Blue PlatformColumnStack {
-      name "PlatformColumnStack1#blue"
-      translation 0.725 -0.75 0
+    DEF Stack1Blue CrateGroup {
+      name "Stack1#blue"
+      translation 0.35 -0.2 0
+      colors %<=colors[5]>%
     }
 
-    DEF Stack2Blue PlatformColumnStack {
-      name "PlatformColumnStack2#blue"
-      translation 0.4 -0.05 0
+    DEF Stack2Blue CrateGroup {
+      name "Stack2#blue"
+      translation 0.4 -0.80 0
+      colors %<=colors[6]>%
     }
 
-    DEF Stack3Blue PlatformColumnStack {
-      name "PlatformColumnStack3#blue"
-      translation 0.675 0.725 0
-    }
-
-    DEF Stack4Blue PlatformColumnStack {
-      name "PlatformColumnStack4#blue"
-      translation 1.425 0.325 0
+    DEF Stack3Blue CrateGroup {
+      name "Stack3#blue"
+      translation 1.325 0.2 0
       rotation 0 0 1 1.5707963268
+      colors %<=colors[7]>%
     }
 
-    DEF Stack5Blue PlatformColumnStack {
-      name "PlatformColumnStack5#blue"
-      translation 1.425 -0.6 0
+    DEF Stack4Blue CrateGroup {
+      name "Stack4#blue"
+      translation 1.325 -0.6 0
       rotation 0 0 1 1.5707963268
+      colors %<=colors[8]>%
     }
+
+    DEF Stack5Blue CrateGroup {
+      name "Stack5#blue"
+      translation 0.7 0.675 0.055
+      colors %<=colors[9]>%
+    }
+
+    DEF Stack6Blue CrateGroup2 {
+      name "Stack6#blue"
+      translation 0.400 0.725 0.055
+      colors %<=colors2[2]>%
+    }
+
+    DEF Stack7Blue CrateGroup2 {
+      name "Stack7#blue"
+      translation 0.150 0.775 0.055
+      colors %<=colors2[3]>%
+    }
+
+    DEF Stack8Blue CrateGroup3 {
+      name "Stack8#blue"
+      translation 0.7 0.675 0.08
+    }
+
 
     %< } >%
 

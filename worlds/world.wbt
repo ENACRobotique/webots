@@ -1,7 +1,7 @@
 #VRML_SIM R2023b utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "../protos/Eurobot2025.proto"
+EXTERNPROTO "../protos/Eurobot2026.proto"
 EXTERNPROTO "../protos/DummyRobot.proto"
 EXTERNPROTO "../protos/VRACRobot.proto"
 EXTERNPROTO "../protos/HolonomicRobot.proto"
@@ -37,7 +37,7 @@ DirectionalLight {
   intensity 1.5
   castShadows TRUE
 }
-Eurobot2025 {
+Eurobot2026 {
 }
 DummyRobot {
   translation -0.26 -0.73 0
