@@ -1,6 +1,10 @@
-# VRAC Webots examples for Eurobot
+# Simulation Webots Eurobot 2026
 
-![Eurobot 2025 table with robots](Eurobot2025.png)
+![Eurobot 2026 table with robots](Eurobot2026.png)
+
+Commencez par [installer Webots](https://cyberbotics.com/doc/guide/installation-procedure#installing-the-debian-package-with-the-advanced-packaging-tool-apt), puis lancer la simulation : `webots worlds/world.wbt`.
+
+--------------
 
 This repo is intended to show a simple Eurobot simulation with Webots  
 The simulation step is 10 ms (defined in world.wbt) and remember the simulated physics are not perfect!  
@@ -52,39 +56,7 @@ Autonomous holonomic controller with odometry from motor encoders
 Performs a sequence of movements from a position (x, y, t) list
 
 **VRACRobotController**:  
-See section [VRACRobotController](#VRACRobotController)
-
-## VRACRobotController
-
-(probably linux only because of the virtual CAN)
-
-VRACRobotController.py: an external controller that is used to interface the real robot program with the Webots simulation environment.  
-
-for this example we are using the following programs:
-
-- **raspiboard**: main program that will run on the Raspberry Pi, has lidar connected, communicate through CAN with motorboard
-
-- **motorboard**: embed program that is running on a microcontroller, has motors and odometry connected, communicate through CAN with raspiboard (the program is in Python to simplify this example)
-
-![diagram of simulation with controller](VRACRobotController.png)
-
-Usage:
-```sh
-# Install packages
-sudo apt install python3 can-utils tmux
-
-# Setup virtual CAN network interface
-sudo ip link add dev vcan0 type vcan
-sudo ip link set up vcan0
-ip link show
-
-# open world.wbt, reset and start simulation
-
-# start external controller VRACRobotController
-cd controllers/VRACRobotController
-./start.sh
-# to quit tmux session, "Ctrl-b" then "Ctrl-q" or "tmux kill-session"
-```
+Black magic from the amazing VRAC team.
 
 # Thanks
 
