@@ -3,12 +3,12 @@
 # license url: https://creativecommons.org/licenses/by/4.0/legalcode
 # template language: javascript
 
-EXTERNPROTO "Crate.proto"
+EXTERNPROTO "EmptyCrate.proto"
 
-PROTO CrateGroup3 [
+PROTO EmptyCrateGroup [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 0 1 0
-  field SFString name "CrateGroup3"
+  field SFString name "EmptyCrateGroup"
 ]
 
 {
@@ -16,20 +16,17 @@ PROTO CrateGroup3 [
     translation IS translation
     rotation IS rotation
     children [
-      Crate {
-        translation -0.050 0 0.015
+      EmptyCrate {
+        translation -0.0501 0 0.015
         name %<= '"' + fields.name.value + '#Crate1"' >%
-        color "black"
       }
-      Crate {
+      EmptyCrate {
         translation 0.00 0 0.015
         name %<= '"' + fields.name.value + '#Crate2"' >%
-        color "black"
       }
-      Crate {
-        translation 0.050 0 0.015
+      EmptyCrate {
+        translation 0.0501 0 0.015
         name %<= '"' + fields.name.value + '#Crate3"' >%
-        color "black"
       }
     ]
   }

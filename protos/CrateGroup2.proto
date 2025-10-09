@@ -13,9 +13,9 @@ PROTO CrateGroup2 [
 ]
 
 {
-%< const perms = [
-    ["yellow", "blue"],
-    ["blue", "yellow"],
+%< const rots = [
+    [0, 3.1415926535],
+    [3.1415926535, 0],
   ];
   >%
 
@@ -24,14 +24,14 @@ PROTO CrateGroup2 [
     rotation IS rotation
     children [
       Crate {
-        translation -0.025 0 0.015
+        translation -0.0251 0 0.015
+        rotation 1 0 0 %<=rots[fields.colors.value][0]>%
         name %<= '"' + fields.name.value + '#Crate1"' >%
-        color %<='"' + perms[fields.colors.value][0] + '"'>%
       }
       Crate {
-        translation 0.025 0 0.015
+        translation 0.0251 0 0.015
+        rotation 1 0 0 %<=rots[fields.colors.value][1]>%
         name %<= '"' + fields.name.value + '#Crate2"' >%
-        color %<='"' + perms[fields.colors.value][1] + '"'>%
       }
     ]
   }

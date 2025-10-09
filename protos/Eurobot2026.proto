@@ -6,7 +6,7 @@
 EXTERNPROTO "BaseTable.proto"
 EXTERNPROTO "CrateGroup.proto"
 EXTERNPROTO "CrateGroup2.proto"
-EXTERNPROTO "CrateGroup3.proto"
+EXTERNPROTO "EmptyCrateGroup.proto"
 EXTERNPROTO "CalculationZone.proto"
 EXTERNPROTO "BeaconSupport.proto"
 EXTERNPROTO "FixedBeacon.proto"
@@ -204,9 +204,9 @@ Group {
       colors %<=colors2[1]>%
     }
 
-    DEF Stack8 CrateGroup3 {
+    DEF Stack8 EmptyCrateGroup {
       name "Stack8"
-      translation -0.7 0.675 0.08
+      translation -0.7 0.675 0.085
     }
 
     %< } >%
@@ -257,9 +257,9 @@ Group {
       colors %<=colors2[3]>%
     }
 
-    DEF Stack8Blue CrateGroup3 {
+    DEF Stack8Blue EmptyCrateGroup {
       name "Stack8#blue"
-      translation 0.7 0.675 0.08
+      translation 0.7 0.675 0.085
     }
 
 
