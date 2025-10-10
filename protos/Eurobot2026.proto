@@ -25,7 +25,7 @@ PROTO Eurobot2026 [
   import * as wbrandom from 'wbrandom.js';
   wbrandom.seed(Date.now());
   let colors = [];
-  for(let i=0; i<10; ++i) {
+  for(let i=0; i<8; ++i) {
     colors.push(wbrandom.integer(0,5));
   }
 
@@ -189,7 +189,7 @@ Group {
     DEF Stack5 CrateGroup {
       name "Stack5"
       translation -0.7 0.675 0.055
-      colors %<=colors[4]>%
+      colors 6
     }
 
     DEF Stack6 CrateGroup2 {
@@ -216,33 +216,33 @@ Group {
     DEF Stack1Blue CrateGroup {
       name "Stack1#blue"
       translation 0.35 -0.2 0
-      colors %<=colors[5]>%
+      colors %<=colors[4]>%
     }
 
     DEF Stack2Blue CrateGroup {
       name "Stack2#blue"
       translation 0.4 -0.80 0
-      colors %<=colors[6]>%
+      colors %<=colors[5]>%
     }
 
     DEF Stack3Blue CrateGroup {
       name "Stack3#blue"
       translation 1.325 0.2 0
       rotation 0 0 1 1.5707963268
-      colors %<=colors[7]>%
+      colors %<=colors[6]>%
     }
 
     DEF Stack4Blue CrateGroup {
       name "Stack4#blue"
       translation 1.325 -0.6 0
       rotation 0 0 1 1.5707963268
-      colors %<=colors[8]>%
+      colors %<=colors[7]>%
     }
 
     DEF Stack5Blue CrateGroup {
       name "Stack5#blue"
       translation 0.7 0.675 0.055
-      colors %<=colors[9]>%
+      colors 7
     }
 
     DEF Stack6Blue CrateGroup2 {

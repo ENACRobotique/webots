@@ -9,7 +9,7 @@ PROTO CrateGroup [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 0 1 0
   field SFString name "CrateGroup"
-  field SFInt32 {0,1,2,3,4,5} colors 2
+  field SFInt32 {0,1,2,3,4,5,6,7} colors 2
 ]
 
 {
@@ -20,7 +20,9 @@ PROTO CrateGroup [
     [0, 3.1415926535, 0, 3.1415926535],
     [0, 3.1415926535, 3.1415926535, 0],
     [3.1415926535, 0, 3.1415926535, 0],
-    [3.1415926535, 0, 0, 3.1415926535]
+    [3.1415926535, 0, 0, 3.1415926535],
+    [0, 0, 0, 0],
+    [3.1415926535, 3.1415926535, 3.1415926535, 3.1415926535]
   ];
   >%
 
