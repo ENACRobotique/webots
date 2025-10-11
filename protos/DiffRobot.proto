@@ -5,15 +5,15 @@
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Rubber.proto"
 EXTERNPROTO "ArucoTag.proto"
-EXTERNPROTO "RPLidarA2M8.proto"
+EXTERNPROTO "LD06.proto"
 
-PROTO VRACRobot [
+PROTO DiffRobot [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 0 1 0
-  field SFString name "VRACRobot"
+  field SFString name "DiffRobot"
   field SFString {"yellow", "blue"} color "blue"
   field SFInt32 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} aruco_id 1
-  field SFString {"GamepadRobot", "VRACbotController", "<extern>", "<none>"} controller "<none>"
+  field SFString {"GamepadRobot", "DiffController", "<extern>", "<none>"} controller "<none>"
 
   hiddenField SFColor yellow_color 0.969 0.71 0
   hiddenField SFColor blue_color 0 0.357 0.549
@@ -22,7 +22,7 @@ PROTO VRACRobot [
 {
 %< var color_vec = fields.color.value == "yellow" ? fields.yellow_color.value : fields.blue_color.value; >%
 
-  DEF VRACRobot Robot {
+  DEF DiffRobot Robot {
     translation IS translation
     rotation IS rotation
     name IS name
@@ -72,7 +72,7 @@ PROTO VRACRobot [
         children [
           #===============LEFT MOTOR WHEEL===============
           Transform {
-            translation 0.0945 0 0.037
+            translation 0.0945 0 0.033
             rotation 0 1 0 1.5707963268
             children [
               DEF left-wheel HingeJoint {
@@ -97,7 +97,7 @@ PROTO VRACRobot [
                       }
                       geometry Cylinder {
                         height 0.044
-                        radius 0.037
+                        radius 0.033
                         subdivision 12
                       }
                     }
@@ -115,7 +115,7 @@ PROTO VRACRobot [
 
           #===============RIGHT MOTOR WHEEL===============
           Transform {
-            translation -0.0945 0 0.037
+            translation -0.0945 0 0.033
             rotation 0 1 0 1.5707963268
             children [
               DEF right-wheel HingeJoint {
@@ -255,15 +255,15 @@ PROTO VRACRobot [
         color IS color
       }
 
-      RPLidarA2M8 {
+      LD06 {
         translation 0 0 0.35
       }
 
-      Display {
-        name "lidar-display"
-        width 300
-        height 300
-      }
+      #Display {
+      #  name "lidar-display"
+      #  width 300
+      #  height 300
+      #}
 
       Camera {
         translation 0.1 0 0.2
@@ -272,6 +272,9 @@ PROTO VRACRobot [
         height 400
         fieldOfView 1.8
         name "camera"
+      }
+      Gyro {
+        name "gyro"
       }
 
       DEF ServoVacuum Transform {
@@ -352,7 +355,7 @@ PROTO VRACRobot [
       mass 10
       centerOfMass 0 0 0.035
     }
-    controller IS controller
-    name IS name
+    #controller IS controller
+    #name IS name
   }
 }

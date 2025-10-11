@@ -11,7 +11,7 @@ PROTO BaseTable [
 ]
 
 {
-%< let playmat_texture = fields.grid_playmat.value ? '"textures/playmat_grid.jpg"' : '"textures/playmat_2026.jpg"'; >%
+%< let playmat_texture = fields.grid_playmat.value ? '"../textures/playmat_grid.jpg"' : '"../textures/playmat_2026.jpg"'; >%
 
   Solid {
     translation IS translation

@@ -12,25 +12,11 @@ sys.path.append("../..")
 from generated import robot_state_pb2 as rpb
 from generated import lidar_data_pb2 as lpb
 
-MAX_SPEED = 20 # in rad/s
+LIDAR_PREDIV = 3
 
-LIDAR_PREDIV = 1
-
-THETA1 = pi/4
-THETA2 = -pi/4.0
-THETA3 = 3*pi/4.0
-THETA4 = -3*pi/4
 ROBOT_RADIUS = 121
 
-
-D = np.array([[-sin(THETA1), cos(THETA1), ROBOT_RADIUS],
-          [-sin(THETA2), cos(THETA2), ROBOT_RADIUS],
-          [-sin(THETA3), cos(THETA3), ROBOT_RADIUS],
-          [-sin(THETA4), cos(THETA4), ROBOT_RADIUS]])
-
-
-
-
+WHEEL_RADIUS = 33   # 66mm diameter
 
 class Robot(Supervisor):
     def __init__(self):
@@ -50,18 +36,14 @@ class Robot(Supervisor):
         self.lidar_count = 0
 
     def init_motors(self):
-        self.mot_front = self.getDevice("frontleft-omni-motor")
-        self.mot_front.setPosition(float('inf'))
-        self.mot_front.setVelocity(0.0)
-        self.mot_right = self.getDevice("frontright-omni-motor")
-        self.mot_right.setPosition(float('inf'))
-        self.mot_right.setVelocity(0.0)
-        self.mot_left = self.getDevice("backleft-omni-motor")
+        self.mot_left = self.getDevice("left-wheel-motor")
         self.mot_left.setPosition(float('inf'))
         self.mot_left.setVelocity(0.0)
-        self.mot_back = self.getDevice("backright-omni-motor")
-        self.mot_back.setPosition(float('inf'))
-        self.mot_back.setVelocity(0.0)
+        self.mot_right = self.getDevice("right-wheel-motor")
+        self.mot_right.setPosition(float('inf'))
+        self.mot_right.setVelocity(0.0)
+        self.servo = self.getDevice("servo")
+        self.pompe = self.getDevice("vacuum-gripper")
     
     def send_lidar_data(self):
         dist_quality = [(1000*d, 200) if d!=float('inf') else (12500, 10) for d in self.lidar.getRangeImage()]
@@ -82,12 +64,11 @@ class Robot(Supervisor):
         pos_msg = rpb.Position(x=x,y=y,theta=theta)
         self.pos_pub.send(pos_msg)
     
-    def set_speed(self, vx, vy, vtheta):
-        m = D @ np.array([vx, vy, vtheta])
-        self.mot_front.setVelocity(-m[0]*MAX_SPEED)
-        self.mot_right.setVelocity(-m[1]*MAX_SPEED)
-        self.mot_left.setVelocity(-m[2]*MAX_SPEED)
-        self.mot_back.setVelocity(-m[3]*MAX_SPEED)
+    def set_speed(self, vx, _vy, vtheta):
+        v_left =  (vx - ROBOT_RADIUS*vtheta) / WHEEL_RADIUS
+        v_right = (vx + ROBOT_RADIUS*vtheta) / WHEEL_RADIUS
+        self.mot_left.setVelocity(v_left)
+        self.mot_right.setVelocity(v_right)
         #print(f"{vx:.2f}  {vy:.2f}  {omega:.2f}")
     
     def run(self):
@@ -100,24 +81,28 @@ class Robot(Supervisor):
 
 
             vx = 0.0
-            vy = 0.0
             omega = 0.0
 
             key = self.kbd.getKey()
             if key == ord('Z'):
-                vx = 1.0
+                vx = 300
             elif key == ord('S'):
-                vx = -1.0
+                vx = -300
             elif key == ord('Q'):
-                vy = 1.0
+                omega = 2.0
             elif key == ord('D'):
-                vy = -1.0
-            elif key == ord('A'):
-                omega = 1.0/ROBOT_RADIUS
-            elif key == ord('E'):
-                omega = -1.0/ROBOT_RADIUS
+                omega = -2.0
+            elif key == ord('G'):
+                self.servo.setPosition(1.7)
+            elif key == ord('R'):
+                self.servo.setPosition(0)
+            elif key == ord('P'):
+                self.pompe.turnOn()
+            elif key == ord('O'):
+                self.pompe.turnOff()
+                
             
-            self.set_speed(vx, vy, omega)
+            self.set_speed(vx, 0, omega)
 
             
 

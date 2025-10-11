@@ -140,7 +140,7 @@ Group {
             Shape {
               appearance PBRAppearance {
                 baseColorMap ImageTexture {
-                  url ["../protos/textures/attic.jpg"]
+                  url ["../textures/attic.jpg"]
                 }
                 roughness 1
                 metalness 0

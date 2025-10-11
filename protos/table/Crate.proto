@@ -17,7 +17,7 @@ PROTO Crate [
 
         appearance PBRAppearance {
           baseColorMap  ImageTexture {
-            url ["../protos/textures/crate.png"]
+            url ["../textures/crate.png"]
           }
 
         roughness 1
