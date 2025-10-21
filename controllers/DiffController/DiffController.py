@@ -11,6 +11,7 @@ sys.path.append("../..")
 
 from generated import robot_state_pb2 as rpb
 from generated import lidar_data_pb2 as lpb
+from generated import common_pb2 as cpb
 
 LIDAR_PREDIV = 3
 
@@ -34,6 +35,8 @@ class Robot(Supervisor):
         gyro = self.getDevice("gyro")
         gyro.enable(TIME_STEP)
         self.lidar_count = 0
+        self.speed_cons_sub = ProtoSubscriber("speed_cons", cpb.Speed)
+        self.speed_cons_sub.set_callback(self.receive_speed_cons)
 
     def init_motors(self):
         self.mot_left = self.getDevice("left-wheel-motor")
@@ -71,6 +74,9 @@ class Robot(Supervisor):
         self.mot_right.setVelocity(v_right)
         #print(f"{vx:.2f}  {vy:.2f}  {omega:.2f}")
     
+    def receive_speed_cons(self, topic_name, hlm, time):
+        self.set_speed(hlm.vx, hlm.vy, hlm.vtheta)
+
     def run(self):
         while self.step() != -1:
             self.send_position()
@@ -80,19 +86,8 @@ class Robot(Supervisor):
             self.lidar_count += 1
 
 
-            vx = 0.0
-            omega = 0.0
-
             key = self.kbd.getKey()
-            if key == ord('Z'):
-                vx = 300
-            elif key == ord('S'):
-                vx = -300
-            elif key == ord('Q'):
-                omega = 2.0
-            elif key == ord('D'):
-                omega = -2.0
-            elif key == ord('G'):
+            if key == ord('G'):
                 self.servo.setPosition(1.7)
             elif key == ord('R'):
                 self.servo.setPosition(0)
@@ -101,10 +96,6 @@ class Robot(Supervisor):
             elif key == ord('O'):
                 self.pompe.turnOff()
                 
-            
-            self.set_speed(vx, 0, omega)
-
-            
 
             self.camera.getImage()
 
