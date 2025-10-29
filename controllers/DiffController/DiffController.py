@@ -5,6 +5,7 @@ from ecal.core.subscriber import ProtoSubscriber
 import sys
 from math import pi, cos, sin
 import numpy as np
+import cv2
 
 
 sys.path.append("../..")
@@ -12,8 +13,11 @@ sys.path.append("../..")
 from generated import robot_state_pb2 as rpb
 from generated import lidar_data_pb2 as lpb
 from generated import common_pb2 as cpb
+from generated import CompressedImage_pb2 as cipb
+from google.protobuf.timestamp_pb2 import Timestamp
 
 LIDAR_PREDIV = 3
+CAM_PREDIV = 8
 
 ROBOT_RADIUS = 121
 
@@ -35,8 +39,10 @@ class Robot(Supervisor):
         gyro = self.getDevice("gyro")
         gyro.enable(TIME_STEP)
         self.lidar_count = 0
+        self.cam_count = 0
         self.speed_cons_sub = ProtoSubscriber("speed_cons", cpb.Speed)
         self.speed_cons_sub.set_callback(self.receive_speed_cons)
+        self.cam_pub = ProtoPublisher("images", cipb.CompressedImage)
 
     def init_motors(self):
         self.mot_left = self.getDevice("left-wheel-motor")
@@ -76,6 +82,12 @@ class Robot(Supervisor):
     
     def receive_speed_cons(self, topic_name, hlm, time):
         self.set_speed(hlm.vx, hlm.vy, hlm.vtheta)
+    
+    def send_camera_img(self):
+        img = np.frombuffer(self.camera.getImage(), dtype=np.uint8).reshape((self.camera.getHeight(), self.camera.getWidth(), 4))
+        img_encode = cv2.imencode(".jpg", img)[1]
+        ci = cipb.CompressedImage(timestamp=Timestamp(), data=img_encode.tobytes(), format='jpeg')
+        self.cam_pub.send(ci)
 
     def run(self):
         while self.step() != -1:
@@ -84,6 +96,12 @@ class Robot(Supervisor):
             if self.lidar_count % LIDAR_PREDIV == 0:
                 self.send_lidar_data()
             self.lidar_count += 1
+
+            if self.cam_count % CAM_PREDIV == 0:
+                self.send_camera_img()
+            self.cam_count += 1
+
+            
 
 
             key = self.kbd.getKey()
@@ -97,7 +115,6 @@ class Robot(Supervisor):
                 self.pompe.turnOff()
                 
 
-            self.camera.getImage()
 
 
 if __name__ == "__main__":
